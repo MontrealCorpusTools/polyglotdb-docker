@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  polyglotdb:
+    image: xiaoyi23/polyglotdb:v1.3
+    container_name: polyglotdb
+    volumes:
+      - shared_data:/temp
+      - .:/polyglotdb
+    depends_on:
+      neo4j: 
+        condition: service_healthy
+    network_mode: host
+    platform: "linux/amd64"
+
+
+  neo4j:
+    image: neo4j:5.22.0
+    container_name: neo4j
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    volumes:
+      - ./pgdb/neo4j/conf:/conf
+      - ./pgdb/neo4j/data:/data
+      - ./pgdb/neo4j/logs:/logs
+      - shared_data:/temp
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider localhost:7474 || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  influxdb:
+    image: influxdb:1.8
+    container_name: influxdb
+    ports:
+      - "8086:8086"
+    volumes:
+      - ./pgdb/influxdb:/var/lib/influxdb 
+      - ./pgdb/influxdb/conf/influxdb.conf:/etc/influxdb/influxdb.conf
+      - shared_data:/temp
+
+
+networks:
+  app_network:
+    driver: bridge
+
+volumes:
+  shared_data:
+
