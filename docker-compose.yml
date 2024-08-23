@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   polyglotdb:
     image: xiaoyi23/polyglotdb:v1.3
@@ -10,6 +8,8 @@ services:
     depends_on:
       neo4j: 
         condition: service_healthy
+      influxdb:
+        condition: service_started
     network_mode: host
     platform: "linux/amd64"
 
