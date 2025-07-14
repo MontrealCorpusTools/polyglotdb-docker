@@ -1,6 +1,6 @@
 services:
   polyglotdb:
-    image: xiaoyi23/polyglotdb:v1.3
+    image: xiaoyi23/polyglotdb:v1.3.3
     container_name: polyglotdb
     volumes:
       - shared_data:/temp
